@@ -435,12 +435,58 @@
   </info>
   <notepads>
   </notepads>
+  <connection>
+    <name>olists_ecom_conn</name>
+    <server>localhost</server>
+    <type>POSTGRESQL</type>
+    <access>Native</access>
+    <database>olist_ecommerce_data_warehouse</database>
+    <port>5432</port>
+    <username>aymaneuser</username>
+    <password>Encrypted 2be98afc86aa79e83a618aa718dc0fe90</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>IS_CLUSTERED</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>PORT_NUMBER</code>
+        <attribute>5432</attribute>
+      </attribute>
+      <attribute>
+        <code>PRESERVE_RESERVED_WORD_CASE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>QUOTE_ALL_FIELDS</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>USE_POOLING</code>
+        <attribute>N</attribute>
+      </attribute>
+    </attributes>
+  </connection>
   <order>
-    <hop>
-      <from>olist_orders.csv</from>
-      <to>Select values 2</to>
-      <enabled>Y</enabled>
-    </hop>
     <hop>
       <from>Select values 2</from>
       <to>sorting rows of orders</to>
@@ -497,8 +543,23 @@
       <enabled>Y</enabled>
     </hop>
     <hop>
+      <from>selecting final fields</from>
+      <to>Table output</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
       <from>Modified JavaScript value</from>
       <to>selecting final fields</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>olist_orders.csv</from>
+      <to>String operations</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>String operations</from>
+      <to>Select values 2</to>
       <enabled>Y</enabled>
     </hop>
   </order>
@@ -553,8 +614,82 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1040</xloc>
-      <yloc>400</yloc>
+      <xloc>1056</xloc>
+      <yloc>320</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Modified JavaScript value</name>
+    <type>ScriptValueMod</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <compatible>N</compatible>
+    <optimizationLevel>9</optimizationLevel>
+    <jsScripts>
+      <jsScript>
+        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>
+var order_purchase_date = null;
+var date_id = null;
+
+if (order_purchase_timestamp != null &amp;&amp; order_purchase_timestamp != "") {
+    var parts = order_purchase_timestamp.split(" ");
+    var dateParts = parts[0].split("-"); // [2017, 10, 02]
+    var timeParts = parts[1].split(":"); // [10, 56, 33]
+    
+    var year = parseInt(dateParts[0], 10);
+    var month = parseInt(dateParts[1], 10) - 1; 
+    var day = parseInt(dateParts[2], 10);
+    
+    var hour = parseInt(timeParts[0], 10);
+    var minute = parseInt(timeParts[1], 10);
+    var second = parseInt(timeParts[2], 10);
+    
+    order_purchase_date = new Date(year, month, day, hour, minute, second);
+    
+    // Clean and simple YYYYMMDD integer generation
+    var realMonth = month + 1;
+    date_id = (year * 10000) + (realMonth * 100) + day;
+}</jsScript_script>
+      </jsScript>
+    </jsScripts>
+    <fields>
+      <field>
+        <name>order_purchase_date</name>
+        <rename>order_purchase_date</rename>
+        <type>Date</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+      <field>
+        <name>date_id</name>
+        <rename>date_id</rename>
+        <type>Number</type>
+        <length>16</length>
+        <precision>2</precision>
+        <replace>N</replace>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>848</xloc>
+      <yloc>320</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -605,8 +740,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>368</xloc>
-      <yloc>272</yloc>
+      <xloc>416</xloc>
+      <yloc>176</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -665,8 +800,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>576</xloc>
-      <yloc>96</yloc>
+      <xloc>592</xloc>
+      <yloc>16</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -720,8 +855,8 @@ var dateLimitOfShipping = new Date(year, month, day);</jsScript_script>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>816</xloc>
-      <yloc>96</yloc>
+      <xloc>832</xloc>
+      <yloc>16</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -753,8 +888,8 @@ var dateLimitOfShipping = new Date(year, month, day);</jsScript_script>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>848</xloc>
-      <yloc>256</yloc>
+      <xloc>864</xloc>
+      <yloc>176</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -871,8 +1006,8 @@ var dateLimitOfShipping = new Date(year, month, day);</jsScript_script>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>144</xloc>
-      <yloc>96</yloc>
+      <xloc>160</xloc>
+      <yloc>16</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -948,7 +1083,7 @@ var dateLimitOfShipping = new Date(year, month, day);</jsScript_script>
       </field>
       <field>
         <name>order_approved_at</name>
-        <type>Date</type>
+        <type>String</type>
         <format>yyyy-MM-dd HH:mm:ss</format>
         <currency>$</currency>
         <decimal>.</decimal>
@@ -959,7 +1094,7 @@ var dateLimitOfShipping = new Date(year, month, day);</jsScript_script>
       </field>
       <field>
         <name>order_delivered_carrier_date</name>
-        <type>Date</type>
+        <type>String</type>
         <format>yyyy-MM-dd HH:mm:ss</format>
         <currency>$</currency>
         <decimal>.</decimal>
@@ -970,7 +1105,7 @@ var dateLimitOfShipping = new Date(year, month, day);</jsScript_script>
       </field>
       <field>
         <name>order_delivered_customer_date</name>
-        <type>Date</type>
+        <type>String</type>
         <format>yyyy-MM-dd HH:mm:ss</format>
         <currency>$</currency>
         <decimal>.</decimal>
@@ -981,7 +1116,7 @@ var dateLimitOfShipping = new Date(year, month, day);</jsScript_script>
       </field>
       <field>
         <name>order_estimated_delivery_date</name>
-        <type>Date</type>
+        <type>String</type>
         <format>yyyy-MM-dd HH:mm:ss</format>
         <currency>$</currency>
         <decimal>.</decimal>
@@ -1000,8 +1135,8 @@ var dateLimitOfShipping = new Date(year, month, day);</jsScript_script>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>128</xloc>
-      <yloc>256</yloc>
+      <xloc>96</xloc>
+      <yloc>176</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1050,8 +1185,8 @@ var dateLimitOfShipping = new Date(year, month, day);</jsScript_script>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1056</xloc>
-      <yloc>80</yloc>
+      <xloc>1072</xloc>
+      <yloc>0</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1128,10 +1263,61 @@ var dateLimitOfShipping = new Date(year, month, day);</jsScript_script>
         <name>date_id</name>
         <rename>date_id</rename>
         <type>Integer</type>
-        <length>16</length>
-        <precision>2</precision>
+        <length>-2</length>
+        <precision>-2</precision>
         <conversion_mask>#</conversion_mask>
         <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>
+      <meta>
+        <name>order_approved_at</name>
+        <rename>order_approved_at</rename>
+        <type>Date</type>
+        <length>-2</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>true</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>
+      <meta>
+        <name>date_limit_of_shipping</name>
+        <rename>date_limit_of_shipping</rename>
+        <type>Date</type>
+        <length>-2</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>true</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>
+      <meta>
+        <name>order_estimated_delivery_date</name>
+        <rename>order_estimated_delivery_date</rename>
+        <type>Date</type>
+        <length>-2</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>true</date_format_lenient>
         <date_format_locale/>
         <date_format_timezone/>
         <lenient_string_to_number>false</lenient_string_to_number>
@@ -1151,8 +1337,8 @@ var dateLimitOfShipping = new Date(year, month, day);</jsScript_script>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>624</xloc>
-      <yloc>400</yloc>
+      <xloc>640</xloc>
+      <yloc>320</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1193,8 +1379,8 @@ var dateLimitOfShipping = new Date(year, month, day);</jsScript_script>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1088</xloc>
-      <yloc>304</yloc>
+      <xloc>1104</xloc>
+      <yloc>224</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1235,8 +1421,8 @@ var dateLimitOfShipping = new Date(year, month, day);</jsScript_script>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>368</xloc>
-      <yloc>96</yloc>
+      <xloc>384</xloc>
+      <yloc>16</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1277,8 +1463,8 @@ var dateLimitOfShipping = new Date(year, month, day);</jsScript_script>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1168</xloc>
-      <yloc>192</yloc>
+      <xloc>1184</xloc>
+      <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1319,14 +1505,14 @@ var dateLimitOfShipping = new Date(year, month, day);</jsScript_script>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>608</xloc>
-      <yloc>272</yloc>
+      <xloc>624</xloc>
+      <yloc>192</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Modified JavaScript value</name>
-    <type>ScriptValueMod</type>
+    <name>Table output</name>
+    <type>TableOutput</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -1335,53 +1521,76 @@ var dateLimitOfShipping = new Date(year, month, day);</jsScript_script>
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <compatible>N</compatible>
-    <optimizationLevel>9</optimizationLevel>
-    <jsScripts>
-      <jsScript>
-        <jsScript_type>0</jsScript_type>
-        <jsScript_name>Script 1</jsScript_name>
-        <jsScript_script>
-var order_purchase_date = null;
-var date_id = null;
-
-if (order_purchase_timestamp != null &amp;&amp; order_purchase_timestamp != "") {
-    var parts = order_purchase_timestamp.split(" ");
-    var dateParts = parts[0].split("-"); // [2017, 10, 02]
-    var timeParts = parts[1].split(":"); // [10, 56, 33]
-    
-    var year = parseInt(dateParts[0], 10);
-    var month = parseInt(dateParts[1], 10) - 1; 
-    var day = parseInt(dateParts[2], 10);
-    
-    var hour = parseInt(timeParts[0], 10);
-    var minute = parseInt(timeParts[1], 10);
-    var second = parseInt(timeParts[2], 10);
-    
-    order_purchase_date = new Date(year, month, day, hour, minute, second);
-    
-    // Clean and simple YYYYMMDD integer generation
-    var realMonth = month + 1;
-    date_id = (year * 10000) + (realMonth * 100) + day;
-}</jsScript_script>
-      </jsScript>
-    </jsScripts>
+    <connection>olists_ecom_conn</connection>
+    <schema>public</schema>
+    <table>fact_orders_lists</table>
+    <commit>1000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>N</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <fields>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>464</xloc>
+      <yloc>320</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>String operations</name>
+    <type>StringOperations</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
     <fields>
       <field>
-        <name>order_purchase_date</name>
-        <rename>order_purchase_date</rename>
-        <type>Date</type>
-        <length>-1</length>
-        <precision>-1</precision>
-        <replace>N</replace>
+        <in_stream_name>order_approved_at</in_stream_name>
+        <out_stream_name/>
+        <trim_type>both</trim_type>
+        <lower_upper/>
+        <padding_type/>
+        <pad_char/>
+        <pad_len/>
+        <init_cap/>
+        <mask_xml/>
+        <digits/>
+        <remove_special_characters/>
       </field>
       <field>
-        <name>date_id</name>
-        <rename>date_id</rename>
-        <type>Number</type>
-        <length>16</length>
-        <precision>2</precision>
-        <replace>N</replace>
+        <in_stream_name>order_estimated_delivery_date</in_stream_name>
+        <out_stream_name/>
+        <trim_type>both</trim_type>
+        <lower_upper/>
+        <padding_type/>
+        <pad_char/>
+        <pad_len/>
+        <init_cap/>
+        <mask_xml/>
+        <digits/>
+        <remove_special_characters/>
       </field>
     </fields>
     <attributes/>
@@ -1393,8 +1602,8 @@ if (order_purchase_timestamp != null &amp;&amp; order_purchase_timestamp != "") 
       </output>
     </remotesteps>
     <GUI>
-      <xloc>832</xloc>
-      <yloc>400</yloc>
+      <xloc>256</xloc>
+      <yloc>160</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

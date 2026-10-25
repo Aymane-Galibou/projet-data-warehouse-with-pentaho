@@ -435,35 +435,353 @@
   </info>
   <notepads>
   </notepads>
+  <connection>
+    <name>dwh_olist_conn</name>
+    <server>localhost</server>
+    <type>POSTGRESQL</type>
+    <access>Native</access>
+    <database>olist_ecommerce_data_warehouse</database>
+    <port>5432</port>
+    <username>aymaneuser</username>
+    <password>Encrypted 2be98afc86aa79e83a618aa718dc0fe90</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>IS_CLUSTERED</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>PORT_NUMBER</code>
+        <attribute>5432</attribute>
+      </attribute>
+      <attribute>
+        <code>PRESERVE_RESERVED_WORD_CASE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>QUOTE_ALL_FIELDS</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>USE_POOLING</code>
+        <attribute>N</attribute>
+      </attribute>
+    </attributes>
+  </connection>
   <order>
     <hop>
-      <from>Calculator</from>
-      <to>adding semester measure</to>
+      <from>Add constants</from>
+      <to>date features</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Modified JavaScript value</from>
-      <to>Calculator</to>
+      <from>Add sequence</from>
+      <to>Add constants</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>order_items.csv to get calendars</from>
-      <to>selecting only purchase_timestamp</to>
+      <from>Generate 5000 rows</from>
+      <to>Add sequence</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>selecting only purchase_timestamp</from>
-      <to>Modified JavaScript value</to>
+      <from>Month Mapper</from>
+      <to>Trimester mapper</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>adding semester measure</from>
-      <to>selecting final columns</to>
+      <from>Trimester mapper</from>
+      <to>day mapper</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>date features</from>
+      <to>Month Mapper</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>day mapper</from>
+      <to>weekend</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>duplicate and rename date</from>
+      <to>date id to integer</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>weekend</from>
+      <to>duplicate and rename date</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>date id to integer</from>
+      <to>Table output</to>
       <enabled>Y</enabled>
     </hop>
   </order>
   <step>
-    <name>Calculator</name>
+    <name>Add constants</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <name>date_debut</name>
+        <type>Date</type>
+        <format>yyyy-MM-dd</format>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>2015-01-01</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>544</xloc>
+      <yloc>144</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Add sequence</name>
+    <type>Sequence</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <valuename>seq</valuename>
+    <use_database>N</use_database>
+    <connection/>
+    <schema/>
+    <seqname>SEQ_</seqname>
+    <use_counter>Y</use_counter>
+    <counter_name/>
+    <start_at>0</start_at>
+    <increment_by>1</increment_by>
+    <max_value>4999</max_value>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>368</xloc>
+      <yloc>144</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Generate 5000 rows</name>
+    <type>RowGenerator</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <name>id</name>
+        <type>Integer</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>1</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+    </fields>
+    <limit>5000</limit>
+    <never_ending>N</never_ending>
+    <interval_in_ms>5000</interval_in_ms>
+    <row_time_field>now</row_time_field>
+    <last_time_field>FiveSecondsAgo</last_time_field>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>192</xloc>
+      <yloc>144</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Month Mapper</name>
+    <type>ValueMapper</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <field_to_use>mois</field_to_use>
+    <target_field>nom_mois</target_field>
+    <non_match_default/>
+    <fields>
+      <field>
+        <source_value>1</source_value>
+        <target_value>Janvier</target_value>
+      </field>
+      <field>
+        <source_value>2</source_value>
+        <target_value>Fevrier</target_value>
+      </field>
+      <field>
+        <source_value>3</source_value>
+        <target_value>Mars</target_value>
+      </field>
+      <field>
+        <source_value>4</source_value>
+        <target_value>Avril</target_value>
+      </field>
+      <field>
+        <source_value>5</source_value>
+        <target_value>Mai</target_value>
+      </field>
+      <field>
+        <source_value>6</source_value>
+        <target_value>Juin</target_value>
+      </field>
+      <field>
+        <source_value>7</source_value>
+        <target_value>Juillet</target_value>
+      </field>
+      <field>
+        <source_value>8</source_value>
+        <target_value>Aout</target_value>
+      </field>
+      <field>
+        <source_value>9</source_value>
+        <target_value>Septembre</target_value>
+      </field>
+      <field>
+        <source_value>10</source_value>
+        <target_value>Octobre</target_value>
+      </field>
+      <field>
+        <source_value>11</source_value>
+        <target_value>Novembre</target_value>
+      </field>
+      <field>
+        <source_value>12</source_value>
+        <target_value>Decembre</target_value>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>880</xloc>
+      <yloc>144</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Trimester mapper</name>
+    <type>ValueMapper</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <field_to_use>trimestre</field_to_use>
+    <target_field>nom_trimestre</target_field>
+    <non_match_default/>
+    <fields>
+      <field>
+        <source_value>1</source_value>
+        <target_value>T1</target_value>
+      </field>
+      <field>
+        <source_value>2</source_value>
+        <target_value>T2</target_value>
+      </field>
+      <field>
+        <source_value>3</source_value>
+        <target_value>T3</target_value>
+      </field>
+      <field>
+        <source_value>4</source_value>
+        <target_value>T4</target_value>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>1040</xloc>
+      <yloc>144</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>date features</name>
     <type>Calculator</type>
     <description/>
     <distribute>Y</distribute>
@@ -475,12 +793,12 @@
     </partitioning>
     <failIfNoFile>Y</failIfNoFile>
     <calculation>
-      <field_name>day</field_name>
-      <calc_type>DAY_OF_MONTH</calc_type>
-      <field_a>order_purchase_date</field_a>
-      <field_b/>
+      <field_name>date</field_name>
+      <calc_type>ADD_DAYS</calc_type>
+      <field_a>date_debut</field_a>
+      <field_b>seq</field_b>
       <field_c/>
-      <value_type>Integer</value_type>
+      <value_type>Date</value_type>
       <value_length>-1</value_length>
       <value_precision>-1</value_precision>
       <remove>N</remove>
@@ -490,24 +808,9 @@
       <currency_symbol/>
     </calculation>
     <calculation>
-      <field_name>month</field_name>
-      <calc_type>MONTH_OF_DATE</calc_type>
-      <field_a>order_purchase_date</field_a>
-      <field_b/>
-      <field_c/>
-      <value_type>Integer</value_type>
-      <value_length>-1</value_length>
-      <value_precision>-1</value_precision>
-      <remove>N</remove>
-      <conversion_mask/>
-      <decimal_symbol/>
-      <grouping_symbol/>
-      <currency_symbol/>
-    </calculation>
-    <calculation>
-      <field_name>year</field_name>
+      <field_name>annee</field_name>
       <calc_type>YEAR_OF_DATE</calc_type>
-      <field_a>order_purchase_date</field_a>
+      <field_a>date</field_a>
       <field_b/>
       <field_c/>
       <value_type>Integer</value_type>
@@ -520,9 +823,39 @@
       <currency_symbol/>
     </calculation>
     <calculation>
-      <field_name>day_of_week</field_name>
+      <field_name>mois</field_name>
+      <calc_type>MONTH_OF_DATE</calc_type>
+      <field_a>date</field_a>
+      <field_b/>
+      <field_c/>
+      <value_type>Integer</value_type>
+      <value_length>-1</value_length>
+      <value_precision>-1</value_precision>
+      <remove>N</remove>
+      <conversion_mask/>
+      <decimal_symbol/>
+      <grouping_symbol/>
+      <currency_symbol/>
+    </calculation>
+    <calculation>
+      <field_name>jour</field_name>
+      <calc_type>DAY_OF_MONTH</calc_type>
+      <field_a>date</field_a>
+      <field_b/>
+      <field_c/>
+      <value_type>Integer</value_type>
+      <value_length>-1</value_length>
+      <value_precision>-1</value_precision>
+      <remove>N</remove>
+      <conversion_mask/>
+      <decimal_symbol/>
+      <grouping_symbol/>
+      <currency_symbol/>
+    </calculation>
+    <calculation>
+      <field_name>jour_semaine</field_name>
       <calc_type>DAY_OF_WEEK</calc_type>
-      <field_a>order_purchase_date</field_a>
+      <field_a>date</field_a>
       <field_b/>
       <field_c/>
       <value_type>Integer</value_type>
@@ -535,9 +868,9 @@
       <currency_symbol/>
     </calculation>
     <calculation>
-      <field_name>quarter</field_name>
+      <field_name>trimestre</field_name>
       <calc_type>QUARTER_OF_DATE</calc_type>
-      <field_a>order_purchase_date</field_a>
+      <field_a>date</field_a>
       <field_b/>
       <field_c/>
       <value_type>Integer</value_type>
@@ -558,261 +891,13 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>880</xloc>
-      <yloc>128</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Modified JavaScript value</name>
-    <type>ScriptValueMod</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <compatible>N</compatible>
-    <optimizationLevel>9</optimizationLevel>
-    <jsScripts>
-      <jsScript>
-        <jsScript_type>0</jsScript_type>
-        <jsScript_name>Script 1</jsScript_name>
-        <jsScript_script>var order_purchase_date = null;
-var date_id = null;
-
-if (order_purchase_timestamp != null &amp;&amp; order_purchase_timestamp != "") {
-    var parts = order_purchase_timestamp.split(" ");
-    var dateParts = parts[0].split("-"); // [2017, 10, 02]
-    var timeParts = parts[1].split(":"); // [10, 56, 33]
-    
-    var year = parseInt(dateParts[0], 10);
-    var month = parseInt(dateParts[1], 10) - 1; 
-    var day = parseInt(dateParts[2], 10);
-    
-    var hour = parseInt(timeParts[0], 10);
-    var minute = parseInt(timeParts[1], 10);
-    var second = parseInt(timeParts[2], 10);
-    
-    order_purchase_date = new Date(year, month, day, hour, minute, second);
-    
-    // Clean and simple YYYYMMDD integer generation
-    var realMonth = month + 1;
-    date_id = (year * 10000) + (realMonth * 100) + day;
-}</jsScript_script>
-      </jsScript>
-    </jsScripts>
-    <fields>
-      <field>
-        <name>order_purchase_date</name>
-        <rename>order_purchase_date</rename>
-        <type>Date</type>
-        <length>-1</length>
-        <precision>-1</precision>
-        <replace>N</replace>
-      </field>
-      <field>
-        <name>date_id</name>
-        <rename>date_id</rename>
-        <type>Number</type>
-        <length>16</length>
-        <precision>2</precision>
-        <replace>N</replace>
-      </field>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>672</xloc>
+      <xloc>720</xloc>
       <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>adding semester measure</name>
-    <type>ValueMapper</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <field_to_use>quarter</field_to_use>
-    <target_field>semester</target_field>
-    <non_match_default/>
-    <fields>
-      <field>
-        <source_value>1</source_value>
-        <target_value>1</target_value>
-      </field>
-      <field>
-        <source_value>2</source_value>
-        <target_value>1</target_value>
-      </field>
-      <field>
-        <source_value>3</source_value>
-        <target_value>2</target_value>
-      </field>
-      <field>
-        <source_value>4</source_value>
-        <target_value>2</target_value>
-      </field>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>1088</xloc>
-      <yloc>208</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>order_items.csv to get calendars</name>
-    <type>CsvInput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <filename>${Internal.Entry.Current.Directory}/data-set/olist_orders_dataset.csv</filename>
-    <filename_field/>
-    <rownum_field/>
-    <include_filename>N</include_filename>
-    <separator>,</separator>
-    <enclosure>"</enclosure>
-    <header>Y</header>
-    <buffer_size>50000</buffer_size>
-    <lazy_conversion>Y</lazy_conversion>
-    <add_filename_result>N</add_filename_result>
-    <parallel>N</parallel>
-    <newline_possible>N</newline_possible>
-    <format>mixed</format>
-    <encoding/>
-    <fields>
-      <field>
-        <name>order_id</name>
-        <type>String</type>
-        <format/>
-        <currency>$</currency>
-        <decimal>.</decimal>
-        <group>,</group>
-        <length>32</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>customer_id</name>
-        <type>String</type>
-        <format/>
-        <currency>$</currency>
-        <decimal>.</decimal>
-        <group>,</group>
-        <length>32</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>order_status</name>
-        <type>String</type>
-        <format/>
-        <currency>$</currency>
-        <decimal>.</decimal>
-        <group>,</group>
-        <length>9</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>order_purchase_timestamp</name>
-        <type>String</type>
-        <format/>
-        <currency>$</currency>
-        <decimal>.</decimal>
-        <group>,</group>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>order_approved_at</name>
-        <type>Date</type>
-        <format>yyyy-MM-dd HH:mm:ss</format>
-        <currency>$</currency>
-        <decimal>.</decimal>
-        <group>,</group>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>order_delivered_carrier_date</name>
-        <type>Date</type>
-        <format>yyyy-MM-dd HH:mm:ss</format>
-        <currency>$</currency>
-        <decimal>.</decimal>
-        <group>,</group>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>order_delivered_customer_date</name>
-        <type>Date</type>
-        <format>yyyy-MM-dd HH:mm:ss</format>
-        <currency>$</currency>
-        <decimal>.</decimal>
-        <group>,</group>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>order_estimated_delivery_date</name>
-        <type>Date</type>
-        <format>yyyy-MM-dd HH:mm:ss</format>
-        <currency>$</currency>
-        <decimal>.</decimal>
-        <group>,</group>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>256</xloc>
-      <yloc>96</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>selecting final columns</name>
+    <name>date id to integer</name>
     <type>SelectValues</type>
     <description/>
     <distribute>Y</distribute>
@@ -824,35 +909,51 @@ if (order_purchase_timestamp != null &amp;&amp; order_purchase_timestamp != "") 
     </partitioning>
     <fields>
       <field>
-        <name>order_purchase_date</name>
+        <name>date</name>
+        <rename>full_date</rename>
       </field>
       <field>
-        <name>date_id</name>
+        <name>annee</name>
+        <rename>year</rename>
       </field>
       <field>
-        <name>day</name>
+        <name>mois</name>
+        <rename>month</rename>
       </field>
       <field>
-        <name>month</name>
+        <name>nom_mois</name>
+        <rename>month_name</rename>
       </field>
       <field>
-        <name>year</name>
+        <name>jour</name>
+        <rename>day</rename>
       </field>
       <field>
-        <name>day_of_week</name>
+        <name>num_jour_semaine</name>
+        <rename>day_of_week</rename>
       </field>
       <field>
-        <name>quarter</name>
+        <name>nom_jour</name>
+        <rename>day_name</rename>
       </field>
       <field>
-        <name>semester</name>
+        <name>weekend</name>
+        <rename>is_weekend</rename>
+      </field>
+      <field>
+        <name>nom_trimestre</name>
+        <rename>quarter_name</rename>
+      </field>
+      <field>
+        <name>id_date</name>
+        <rename/>
       </field>
       <select_unspecified>N</select_unspecified>
       <meta>
-        <name>date_id</name>
+        <name>id_date</name>
         <rename>date_id</rename>
         <type>Integer</type>
-        <length>16</length>
+        <length>-2</length>
         <precision>-2</precision>
         <conversion_mask>#</conversion_mask>
         <date_format_lenient>false</date_format_lenient>
@@ -875,13 +976,71 @@ if (order_purchase_timestamp != null &amp;&amp; order_purchase_timestamp != "") 
       </output>
     </remotesteps>
     <GUI>
-      <xloc>880</xloc>
-      <yloc>288</yloc>
+      <xloc>848</xloc>
+      <yloc>256</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>selecting only purchase_timestamp</name>
+    <name>day mapper</name>
+    <type>ValueMapper</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <field_to_use>jour_semaine</field_to_use>
+    <target_field>nom_jour</target_field>
+    <non_match_default/>
+    <fields>
+      <field>
+        <source_value>1</source_value>
+        <target_value>Dimanche</target_value>
+      </field>
+      <field>
+        <source_value>2</source_value>
+        <target_value>Lundi</target_value>
+      </field>
+      <field>
+        <source_value>3</source_value>
+        <target_value>Mardi</target_value>
+      </field>
+      <field>
+        <source_value>4</source_value>
+        <target_value>Mercredi</target_value>
+      </field>
+      <field>
+        <source_value>5</source_value>
+        <target_value>Jeudi</target_value>
+      </field>
+      <field>
+        <source_value>6</source_value>
+        <target_value>Vendredi</target_value>
+      </field>
+      <field>
+        <source_value>7</source_value>
+        <target_value>Samedi</target_value>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>1216</xloc>
+      <yloc>144</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>duplicate and rename date</name>
     <type>SelectValues</type>
     <description/>
     <distribute>Y</distribute>
@@ -893,16 +1052,45 @@ if (order_purchase_timestamp != null &amp;&amp; order_purchase_timestamp != "") 
     </partitioning>
     <fields>
       <field>
-        <name>order_purchase_timestamp</name>
+        <name>date</name>
+      </field>
+      <field>
+        <name>annee</name>
+      </field>
+      <field>
+        <name>mois</name>
+      </field>
+      <field>
+        <name>nom_mois</name>
+      </field>
+      <field>
+        <name>jour</name>
+      </field>
+      <field>
+        <name>jour_semaine</name>
+        <rename>num_jour_semaine</rename>
+      </field>
+      <field>
+        <name>nom_jour</name>
+      </field>
+      <field>
+        <name>weekend</name>
+      </field>
+      <field>
+        <name>nom_trimestre</name>
+      </field>
+      <field>
+        <name>date</name>
+        <rename>id_date</rename>
       </field>
       <select_unspecified>N</select_unspecified>
       <meta>
-        <name>order_purchase_timestamp</name>
-        <rename>order_purchase_timestamp</rename>
+        <name>id_date</name>
+        <rename>id_date</rename>
         <type>String</type>
         <length>-2</length>
         <precision>-2</precision>
-        <conversion_mask/>
+        <conversion_mask>yyyyMMdd</conversion_mask>
         <date_format_lenient>false</date_format_lenient>
         <date_format_locale/>
         <date_format_timezone/>
@@ -923,8 +1111,90 @@ if (order_purchase_timestamp != null &amp;&amp; order_purchase_timestamp != "") 
       </output>
     </remotesteps>
     <GUI>
-      <xloc>464</xloc>
-      <yloc>192</yloc>
+      <xloc>1040</xloc>
+      <yloc>256</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>weekend</name>
+    <type>ValueMapper</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <field_to_use>jour_semaine</field_to_use>
+    <target_field>weekend</target_field>
+    <non_match_default>Non</non_match_default>
+    <fields>
+      <field>
+        <source_value>1</source_value>
+        <target_value>Oui</target_value>
+      </field>
+      <field>
+        <source_value>7</source_value>
+        <target_value>Oui</target_value>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>1216</xloc>
+      <yloc>256</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Table output</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>dwh_olist_conn</connection>
+    <schema>public</schema>
+    <table>dim_calendar</table>
+    <commit>1000</commit>
+    <truncate>N</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>N</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <fields>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>656</xloc>
+      <yloc>256</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
