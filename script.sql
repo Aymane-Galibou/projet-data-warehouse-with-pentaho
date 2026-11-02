@@ -93,7 +93,7 @@ CREATE TABLE fact_orders_lists (
     order_estimated_delivery_date TIMESTAMP,
     total_item_cost NUMERIC(12, 2),
     quantity INTEGER,
-    date_id INTEGER,
+    date_id INTEGER
     
 );
 
