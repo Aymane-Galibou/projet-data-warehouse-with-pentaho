@@ -431,20 +431,20 @@
     <created_date>2026/10/22 20:08:43.007</created_date>
     <modified_user>-</modified_user>
     <modified_date>2026/10/22 20:08:43.007</modified_date>
-    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
+    <key_for_session_key>H4sIAAAAAAAA/wMAAAAAAAAAAAA=</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
   </notepads>
   <connection>
-    <name>conn</name>
-    <server>localhost</server>
+    <name>dwh_conn</name>
+    <server>127.0.0.1</server>
     <type>POSTGRESQL</type>
     <access>Native</access>
-    <database>olist_ecommerce_data_warehouse</database>
+    <database>dwh_project_pentaho</database>
     <port>5432</port>
-    <username>aymaneuser</username>
-    <password>Encrypted 2be98afc86aa79e83a618aa718dc0fe90</password>
+    <username>postgres</username>
+    <password>Encrypted 2be98afc86aa7f2a8a2148e7d8cc2ff8e</password>
     <servername/>
     <data_tablespace/>
     <index_tablespace/>
@@ -721,6 +721,51 @@
     </GUI>
   </step>
   <step>
+    <name>Memory group by</name>
+    <type>MemoryGroupBy</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <give_back_row>N</give_back_row>
+    <group>
+      <field>
+        <name>geolocation_zip_code_prefix</name>
+      </field>
+    </group>
+    <fields>
+      <field>
+        <aggregate>seller_lat</aggregate>
+        <subject>geolocation_lat</subject>
+        <type>AVERAGE</type>
+        <valuefield/>
+      </field>
+      <field>
+        <aggregate>seller_lon</aggregate>
+        <subject>geolocation_lng</subject>
+        <type>AVERAGE</type>
+        <valuefield/>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>592</xloc>
+      <yloc>256</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
     <name>Merge join</name>
     <type>MergeJoin</type>
     <description/>
@@ -768,15 +813,12 @@
     <fields>
       <field>
         <name>seller_id</name>
-        <rename/>
       </field>
       <field>
         <name>seller_city</name>
-        <rename/>
       </field>
       <field>
         <name>seller_state</name>
-        <rename/>
       </field>
       <field>
         <name>geolocation_zip_code_prefix</name>
@@ -784,11 +826,9 @@
       </field>
       <field>
         <name>seller_lat</name>
-        <rename/>
       </field>
       <field>
         <name>seller_lon</name>
-        <rename/>
       </field>
       <select_unspecified>N</select_unspecified>
     </fields>
@@ -820,19 +860,15 @@
     <fields>
       <field>
         <name>seller_id</name>
-        <rename/>
       </field>
       <field>
         <name>seller_zip_code_prefix</name>
-        <rename/>
       </field>
       <field>
         <name>seller_city</name>
-        <rename/>
       </field>
       <field>
         <name>seller_state</name>
-        <rename/>
       </field>
       <select_unspecified>N</select_unspecified>
       <meta>
@@ -915,6 +951,77 @@
     <GUI>
       <xloc>528</xloc>
       <yloc>96</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Select values 2</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <name>geolocation_zip_code_prefix</name>
+      </field>
+      <field>
+        <name>seller_lat</name>
+      </field>
+      <field>
+        <name>seller_lon</name>
+      </field>
+      <select_unspecified>N</select_unspecified>
+      <meta>
+        <name>seller_lat</name>
+        <rename>seller_lat</rename>
+        <type>BigNumber</type>
+        <length>10</length>
+        <precision>8</precision>
+        <conversion_mask>0.00000000</conversion_mask>
+        <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>
+      <meta>
+        <name>seller_lon</name>
+        <rename>seller_lon</rename>
+        <type>BigNumber</type>
+        <length>10</length>
+        <precision>8</precision>
+        <conversion_mask>0.00000000</conversion_mask>
+        <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>768</xloc>
+      <yloc>272</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1045,125 +1152,6 @@
     </GUI>
   </step>
   <step>
-    <name>Memory group by</name>
-    <type>MemoryGroupBy</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <give_back_row>N</give_back_row>
-    <group>
-      <field>
-        <name>geolocation_zip_code_prefix</name>
-      </field>
-    </group>
-    <fields>
-      <field>
-        <aggregate>seller_lat</aggregate>
-        <subject>geolocation_lat</subject>
-        <type>AVERAGE</type>
-        <valuefield/>
-      </field>
-      <field>
-        <aggregate>seller_lon</aggregate>
-        <subject>geolocation_lng</subject>
-        <type>AVERAGE</type>
-        <valuefield/>
-      </field>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>592</xloc>
-      <yloc>256</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Select values 2</name>
-    <type>SelectValues</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <fields>
-      <field>
-        <name>geolocation_zip_code_prefix</name>
-        <rename/>
-      </field>
-      <field>
-        <name>seller_lat</name>
-        <rename/>
-      </field>
-      <field>
-        <name>seller_lon</name>
-        <rename/>
-      </field>
-      <select_unspecified>N</select_unspecified>
-      <meta>
-        <name>seller_lat</name>
-        <rename>seller_lat</rename>
-        <type>BigNumber</type>
-        <length>10</length>
-        <precision>8</precision>
-        <conversion_mask>0.00000000</conversion_mask>
-        <date_format_lenient>false</date_format_lenient>
-        <date_format_locale/>
-        <date_format_timezone/>
-        <lenient_string_to_number>false</lenient_string_to_number>
-        <encoding/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <storage_type/>
-      </meta>
-      <meta>
-        <name>seller_lon</name>
-        <rename>seller_lon</rename>
-        <type>BigNumber</type>
-        <length>10</length>
-        <precision>8</precision>
-        <conversion_mask>0.00000000</conversion_mask>
-        <date_format_lenient>false</date_format_lenient>
-        <date_format_locale/>
-        <date_format_timezone/>
-        <lenient_string_to_number>false</lenient_string_to_number>
-        <encoding/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <storage_type/>
-      </meta>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>768</xloc>
-      <yloc>272</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
     <name>Table output</name>
     <type>TableOutput</type>
     <description/>
@@ -1174,7 +1162,7 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>conn</connection>
+    <connection>dwh_conn</connection>
     <schema>public</schema>
     <table>dim_sellers</table>
     <commit>1000</commit>

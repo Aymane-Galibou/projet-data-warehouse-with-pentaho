@@ -1,4 +1,3 @@
-
 -- Drop tables if they already exist 
 DROP TABLE IF EXISTS fact_orders_lists CASCADE;
 DROP TABLE IF EXISTS dim_customers CASCADE;
@@ -107,3 +106,7 @@ CREATE INDEX idx_fact_orders_product ON fact_orders_lists(product_id);
 CREATE INDEX idx_fact_orders_date ON fact_orders_lists(date_id);
 
 
+alter table fact_orders_lists
+  add column order_delivered_customer_date timestamp,
+  add column delivery_delay_days integer generated always as
+      (order_delivered_customer_date::date - order_estimated_delivery_date::date) stored;
